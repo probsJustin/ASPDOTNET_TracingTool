@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPDOTNET_TracingTool", "ASPDOTNET_TracingTool\ASPDOTNET_TracingTool.csproj", "{A32232DF-F522-4D8A-A700-EC66AD47DDE5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A32232DF-F522-4D8A-A700-EC66AD47DDE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A32232DF-F522-4D8A-A700-EC66AD47DDE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A32232DF-F522-4D8A-A700-EC66AD47DDE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A32232DF-F522-4D8A-A700-EC66AD47DDE5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {605C1BBB-F21B-4537-A597-1683FC56B9A6}
+	EndGlobalSection
+EndGlobal
