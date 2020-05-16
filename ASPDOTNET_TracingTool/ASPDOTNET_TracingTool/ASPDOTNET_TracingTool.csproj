@@ -144,7 +144,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="aspx\" />
-    <Folder Include="html\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
