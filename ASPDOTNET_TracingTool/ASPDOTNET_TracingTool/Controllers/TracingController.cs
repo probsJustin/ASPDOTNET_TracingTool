@@ -23,7 +23,34 @@ namespace ASPDOTNET_TracingTool.Controllers
         const string SLPASS = "url_passthrough";
         const string SLHTML = "html";
         const string SLNAME = "Dynatrace Support Lab Debug ";
-        public bool isHTML = false; 
+        const string SLRES_CODE = "responseCode"; 
+        public bool isHTML = false;
+        public bool isDebug = false;
+        public string checkRequestParams(HttpRequestBase functionHttpRequest_Input, string functionString_SearchItem)
+        {
+            string returnObject = "Empty";
+            try
+            {
+                returnObject = functionHttpRequest_Input.QueryString[functionString_SearchItem];
+            }catch(Exception exc)
+            {
+                returnObject = "Empty";
+            }
+            return returnObject; 
+        }
+        public string checkRequestHeader(HttpRequestBase functionHttpRequest_Input, string functionString_SearchItem)
+        {
+            string returnObject = "Empty";
+            try
+            {
+                returnObject = functionHttpRequest_Input.QueryString[functionString_SearchItem];
+            }
+            catch (Exception exc)
+            {
+                returnObject = "Empty";
+            }
+            return returnObject; 
+        }
         public string line(string functionString_input = "")
         {
             if (isHTML)
@@ -50,40 +77,120 @@ namespace ASPDOTNET_TracingTool.Controllers
         public ContentResult requestFactory()
         {
             ContentResult returnObject = new ContentResult();
-            if (Request.Params.AllKeys.Contains(SLHTML))
-            {
-                if (Request.Params[SLHTML] == "true")
+            string string_PassThroughURL_Param = checkRequestParams(Request, SLPASS);
+            string string_responseCode_Param = checkRequestParams(Request, SLRES_CODE);
+            string string_SLREQ_Header = checkRequestHeader(Request, SLREQ);
+            string string_SLRES_Header = checkRequestHeader(Request, SLRES);
+            string string_SLPATH_Header = checkRequestHeader(Request, SLPATH);
+            string string_SLPOS_Header = checkRequestHeader(Request, SLPOS); 
+                // check for the debug parameter is equal to true/1/True
+                try
                 {
-                    isHTML = true;
+                    if (checkRequestParams(Request, "debug").ToLower() == "true" | checkRequestParams(Request, "debug") == "1")
+                    {
+                        isDebug = true;
+                    }
+                    if (checkRequestParams(Request, "Debug").ToLower() == "true" | checkRequestParams(Request, "Debug") == "1")
+                    {
+                        isDebug = true;
+                    }
+                    if (isDebug)
+                    {
+                        if (Request.Params.AllKeys.Contains(SLHTML))
+                        {
+                            if (Request.Params[SLHTML] == "true")
+                            {
+                                isHTML = true;
+                            }
+                            else
+                            {
+                                isHTML = false;
+                            }
+                            addBody(line(SLNAME + "HTML Debug Flag Found"));
+                            addBody(line("HTML Parameter is set to: " + Request.Params[SLHTML] + line()));
+                        }
+                        addBody(line(SLNAME + "Headers:"));
+                        foreach (string instanceHeader in Request.Headers)
+                        {
+                            addBody(line(instanceHeader + " : " + Request.Headers[instanceHeader]));
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                    if(string_SLREQ_Header != "Empty")
+                    {
+                        if (isDebug)
+                        {
+                            // dynatrace support lab request fake header found
+                            addBody(line(SLNAME + " DynaSupLabReq header found:")); 
+                        }
+                    }
+                    if(string_SLRES_Header != "Empty")
+                    {
+                        if (isDebug)
+                        {
+                            // dynatrace support lab response fake header found
+                            addBody(line(SLNAME + " DynaSupLabRes header found:")); 
+                                
+                        }
+                    }
+                    if (string_SLPATH_Header != "Empty")
+                    {
+                        if (isDebug)
+                        {
+                            // dynatrace support path header found
+                            addBody(line(SLNAME + " path header found:"));
+                        }
+                    }
+                    if(string_SLPOS_Header != "Empty")
+                    {
+                        if (isDebug)
+                        {
+                            // dynatrace support position header found
+                            addBody(line(SLNAME + " position header found:"));
+                        }
+                    }
+                    if (string_PassThroughURL_Param != "Empty")
+                    {
+                        //create url request
+                        if (isDebug)
+                        {
+                            // dynatrace url pass through parameter found 
+                            addBody(line(SLNAME + " url pass through parameter found"));
+                        }
+                    }
+                    
                 }
-                else
+                catch(Exception e)
                 {
-                    isHTML = false;
+                    // print exception 
+                    addBody(line(SLNAME + " Exception Found: " + line(e.ToString()))); 
                 }
-                addBody(line(SLNAME + "HTML Debug Flag Found"));
-                addBody(line("HTML Parameter is set to: " + Request.Params[SLHTML] + line()));
-            }
-            addBody(line(SLNAME + "Headers:"));
-            foreach (string instanceHeader in Request.Headers)
-            {
-                addBody(line(instanceHeader + " : " + Request.Headers[instanceHeader]));
-            }
             returnObject.Content = body;
             return returnObject; 
         }
         [HttpGet]
-        [Route("")]
+        [Route("maps/*")]
         public ContentResult Get()
         {
-            return requestFactory(); 
+            return requestFactory();
         }
         [HttpGet]
         [Route("testApi_GET")]
         public ContentResult testApi_GET()
         {
 
-            return requestFactory(); 
+            return requestFactory();
         }
+        [HttpGet]
+        [Route("test/{page}")]
+        public ContentResult htmlAction(string page)
+        {
+            return requestFactory();
+        }
+
 
 
     }

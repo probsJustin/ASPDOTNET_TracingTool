@@ -14,5 +14,6 @@ namespace ASPDOTNET_TracingTool
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.MapMvcAttributeRoutes();
         }
+
     }
 }
