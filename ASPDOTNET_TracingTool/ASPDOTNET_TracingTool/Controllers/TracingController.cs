@@ -26,12 +26,20 @@ namespace ASPDOTNET_TracingTool.Controllers
         const string SLRES_CODE = "responseCode"; 
         public bool isHTML = false;
         public bool isDebug = false;
+
         public string checkRequestParams(HttpRequestBase functionHttpRequest_Input, string functionString_SearchItem)
         {
             string returnObject = "Empty";
             try
             {
-                returnObject = functionHttpRequest_Input.QueryString[functionString_SearchItem];
+                if (functionHttpRequest_Input.Params.AllKeys.Contains(functionString_SearchItem))
+                {
+                    returnObject = functionHttpRequest_Input.QueryString[functionString_SearchItem];
+                }
+                else
+                {
+                    returnObject = "Empty";
+                }
             }catch(Exception exc)
             {
                 returnObject = "Empty";
@@ -73,6 +81,15 @@ namespace ASPDOTNET_TracingTool.Controllers
             {
                 return e.ToString(); 
             }
+        }
+        public Dictionary<string, string> generateRequest(string string_function_url)
+        {
+            Dictionary<string, string> returnObject = new Dictionary<string, string>();
+            HttpWebRequest requestInstance = (HttpWebRequest)WebRequest.Create(string_function_url);
+            HttpWebResponse responseInstance = null; 
+            responseInstance = (HttpWebResponse)requestInstance.GetResponse();
+            returnObject["content"] = responseInstance.ToString(); 
+            return returnObject; 
         }
         public ContentResult requestFactory()
         {
@@ -154,14 +171,19 @@ namespace ASPDOTNET_TracingTool.Controllers
                     }
                     if (string_PassThroughURL_Param != "Empty")
                     {
-                        //create url request
+                    //create url request
                         if (isDebug)
                         {
                             // dynatrace url pass through parameter found 
                             addBody(line(SLNAME + " url pass through parameter found"));
+                            addBody(line(generateRequest(string_PassThroughURL_Param)["content"]));
                         }
+                        
                     }
-                    
+                if (!isDebug)
+                {
+                    addBody(line("Debug : False"));
+                }
                 }
                 catch(Exception e)
                 {
@@ -171,27 +193,20 @@ namespace ASPDOTNET_TracingTool.Controllers
             returnObject.Content = body;
             return returnObject; 
         }
+
         [HttpGet]
-        [Route("maps/*")]
-        public ContentResult Get()
-        {
-            return requestFactory();
-        }
-        [HttpGet]
-        [Route("testApi_GET")]
+        [Route("apiTest_GET")]
         public ContentResult testApi_GET()
         {
 
             return requestFactory();
         }
         [HttpGet]
-        [Route("test/{page}")]
-        public ContentResult htmlAction(string page)
+        [Route("")]
+        public ContentResult index()
         {
+
             return requestFactory();
         }
-
-
-
     }
 }
